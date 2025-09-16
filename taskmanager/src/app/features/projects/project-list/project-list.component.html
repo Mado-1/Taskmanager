@@ -1,0 +1,52 @@
+<!-- Lista över projekt och åtgärder för varje projekt -->
+<div class="project-wrapper">
+  <div class="top-container">
+    <input
+      type="text"
+      placeholder="Search project..."
+      class="search-input"
+      (input)="onSearch($any($event.target).value)"
+    />
+    <button class="btn-newproject" (click)="openProjectFormDialog()">
+      New project
+    </button>
+  </div>
+
+  <div class="project-container">
+    <div class="project-card" *ngFor="let project of filteredProjects()">
+      <div class="project-name">
+        {{
+          project.name.length > 35
+            ? (project.name | slice : 0 : 35) + "..."
+            : project.name
+        }}
+      </div>
+      <div class="description">
+        {{
+          project.description
+            ? (project.description | slice : 0 : 25) + "..."
+            : "No description"
+        }}
+      </div>
+
+      <div *ngIf="project.userIds.length > 1" class="shared-text">Shared</div>
+      <div *ngIf="project.userIds.length === 1" class="own-text">Own</div>
+
+      <div class="project-actions">
+        <button class="btn btn-view" (click)="onProjectClick(project)">
+          <img src="view-icon.png" alt="View" class="btn-icon" />
+        </button>
+        <button class="btn btn-edit" (click)="editProject(project)">
+          <img src="edit-icon.png" alt="Edit" class="btn-icon" />
+        </button>
+        <button class="btn btn-delete" (click)="deleteProject(project.id)">
+          <img src="delete-icon.png" alt="Delete" class="btn-icon" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loader">
+    <p>Loading projects...</p>
+  </div>
+</div>

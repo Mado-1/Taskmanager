@@ -1,0 +1,80 @@
+<!-- Formulär för att skapa ny uppgift -->
+<div class="Taskadd">
+  <div class="dialog-header">
+    <h2>Create new task</h2>
+    <button class="close-btn" (click)="close()">&#10005;</button>
+  </div>
+
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="form-container">
+    <div class="form-group">
+      <label for="title">Title:</label>
+      <input
+        id="title"
+        type="text"
+        formControlName="title"
+        placeholder="Enter task title"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        placeholder="Enter task description"
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="priority">Priority:</label>
+      <select id="priority" formControlName="priority">
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="status">Status:</label>
+      <select id="status" formControlName="status">
+        <option value="active">Active</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+
+    <div class="form-group" *ngIf="false">
+      <label for="projectId">Project:</label>
+      <input
+        id="projectId"
+        type="number"
+        formControlName="projectId"
+        placeholder="Project ID"
+        required
+      />
+    </div>
+
+    <div class="form-group" *ngIf="false">
+      <label for="creatorId">Creator:</label>
+      <input
+        id="creatorId"
+        type="number"
+        formControlName="creatorId"
+        placeholder="Creator ID"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="deadline">Deadline:</label>
+      <input id="deadline" type="date" formControlName="deadline" />
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn">Create</button>
+      <button type="button" class="btn btn-cancel" (click)="onCancel()">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

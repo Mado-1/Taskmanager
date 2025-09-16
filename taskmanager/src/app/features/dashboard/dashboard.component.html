@@ -1,0 +1,82 @@
+<!-- Dashboard för användar- och projektstatistik -->
+
+<section class="dashboard-section">
+  <div class="title">
+    <h3>All Users</h3>
+  </div>
+  <app-user-list (userSelected)="onUserSelected($event)"></app-user-list>
+</section>
+
+<!-- Visar statistik för vald användare -->
+<section class="dashboard-section" *ngIf="selectedUser">
+  <div class="title">
+    <h3>
+      Statistics for user:
+      <span class="state">{{ selectedUser.name }}</span>
+    </h3>
+  </div>
+
+  <div class="chart-wrapper">
+    <div class="stats-card">
+      <div class="title">Priority</div>
+      <div class="content">
+        <app-pie-chart [selectedUserId]="selectedUser.id"></app-pie-chart>
+      </div>
+    </div>
+
+    <div class="stats-card">
+      <div class="title">Task</div>
+      <div class="content">
+        <app-bar-chart-task
+          [selectedUserId]="selectedUser.id"
+        ></app-bar-chart-task>
+      </div>
+    </div>
+
+    <div class="stats-card">
+      <div class="title">Project</div>
+      <div class="content">
+        <app-bar-chart-by-project
+          [selectedUserId]="selectedUser.id"
+        ></app-bar-chart-by-project>
+      </div>
+    </div>
+
+    <div class="stats-card">
+      <div class="title">Summary</div>
+      <div class="content">
+        <app-summary [selectedUserId]="selectedUser.id"></app-summary>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Visar alla projekt för vald användare -->
+<section class="dashboard-section" *ngIf="selectedUser">
+  <div class="title">
+    <h3>
+      All projects for selected:
+      <span class="state">{{ selectedUser.name }}</span>
+    </h3>
+  </div>
+  <app-project-list
+    [projects]="userProjects"
+    [userId]="selectedUser.id"
+    (projectSelected)="onProjectClick($event)"
+    (projectDeleted)="onProjectDeleted($event)"
+  ></app-project-list>
+</section>
+
+<!-- Visar alla tasks för valt projekt -->
+<section class="dashboard-section" *ngIf="selectedProjectId">
+  <div class="title">
+    <h3>
+      All tasks for selected project:
+      <span class="state"> {{ selectedProjectName }}</span>
+    </h3>
+  </div>
+  <app-task-list
+    [userId]="selectedUser?.id || 0"
+    [projectId]="selectedProjectId || 0"
+  ></app-task-list>
+</section>

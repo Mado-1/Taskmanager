@@ -1,0 +1,61 @@
+<!-- Formulär för att redigera en task -->
+<div class="TaskEdit">
+  <div *ngIf="task">
+    <div class="dialog-header">
+      <h2>
+        Edit task: {{ task.title }}
+      </h2>
+      <button class="close-btn" (click)="close()">&#10005;</button>
+    </div>
+
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="form-container">
+      <div class="form-group">
+        <label>Title:</label>
+        <input formControlName="title" type="text" />
+        <div
+          *ngIf="
+            taskForm.get('title')?.invalid && taskForm.get('title')?.touched
+          "
+        >
+          <small class="error">Title is required</small>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description:</label>
+        <textarea formControlName="description"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Priority:</label>
+        <select formControlName="priority">
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status:</label>
+        <select formControlName="status">
+          <option value="active">Active</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Deadline:</label>
+        <input formControlName="deadline" type="date" />
+      </div>
+      <div class="form-group" *ngIf="false">
+        <label>Project:</label>
+        <input
+          [value]="task?.projectName || task?.projectId"
+          type="text"
+          readonly
+        />
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-save" [disabled]="taskForm.invalid">
+          Save changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

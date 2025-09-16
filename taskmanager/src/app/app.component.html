@@ -1,0 +1,4 @@
+<app-sidebar (sidebarToggle)="isSidebarOpen = $event"></app-sidebar>
+<main class="main-content" [class.sidebar-open]="isSidebarOpen" [class.sidebar-closed]="!isSidebarOpen">
+  <router-outlet></router-outlet>
+</main>

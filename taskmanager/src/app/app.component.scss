@@ -1,0 +1,16 @@
+.main-content {
+  transition: margin-left 0.3s ease; 
+  padding: 20px;
+  color: rgb(8, 8, 8);
+  background-color: #f4f4f4; 
+
+  justify-content: center;
+
+  &.sidebar-open {
+    margin-left: 250px; 
+  }
+
+  &.sidebar-closed {
+    margin-left: 60px; 
+  }
+}

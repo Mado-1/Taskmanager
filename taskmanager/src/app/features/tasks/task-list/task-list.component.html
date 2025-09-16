@@ -1,0 +1,199 @@
+<!-- Lista och hantering av uppgifter i olika kolumner baserat på prioritet och status -->
+<div class="task-wrapper">
+  <div class="top-container">
+    <input
+      type="text"
+      placeholder="Search task..."
+      class="search-input"
+      (input)="onSearch($any($event.target).value)"
+    />
+    <button class="btn-newtask" (click)="openTaskFormDialog()">New Task</button>
+  </div>
+
+  <div
+    *ngIf="!loading && filteredTasksList.length === 0"
+    class="no-tasks-message"
+  >
+    <p>No tasks available for this project.</p>
+  </div>
+
+  <div class="task-container" *ngIf="filteredTasksList.length > 0">
+    <div class="task-columns">
+      <!-- Kolumn för Low Priority -->
+      <div
+        class="task-column low"
+        cdkDropList
+        [cdkDropListData]="lowPriorityTasks"
+        [cdkDropListConnectedTo]="['medium', 'high', 'completed']"
+        id="low"
+        (cdkDropListDropped)="onTaskDrop($event)"
+      >
+        <h3>Low Priority</h3>
+        <div
+          class="task-card low"
+          *ngFor="let task of lowPriorityTasks"
+          cdkDrag
+          [cdkDragData]="task"
+        >
+          <span class="title" [style.color]="task.priority | priorityColor">
+            {{ task.title }}
+          </span>
+          <p>{{ task.status }}</p>
+          <div class="deadline">
+            <span *ngIf="task.deadline; else noDeadline">{{
+              task.deadline | date : "yyyy-MM-dd"
+            }}</span>
+            <ng-template #noDeadline>
+              <span class="no-deadline">No Time</span>
+            </ng-template>
+          </div>
+
+          <div class="task-actions">
+            <button class="btn btn-edit" (click)="editTask(task)">
+              <img src="edit-icon.png" alt="Edit" class="btn-icon" />
+            </button>
+            <button
+              class="btn btn-delete"
+              *ngIf="task.id !== undefined"
+              (click)="deleteTask(task.id)"
+            >
+              <img src="delete-icon.png" alt="Delete" class="btn-icon" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kolumn för Medium Priority -->
+      <div
+        class="task-column medium"
+        cdkDropList
+        [cdkDropListData]="mediumPriorityTasks"
+        [cdkDropListConnectedTo]="['low', 'high', 'completed']"
+        id="medium"
+        (cdkDropListDropped)="onTaskDrop($event)"
+      >
+        <h3>Medium Priority</h3>
+        <div
+          class="task-card medium"
+          *ngFor="let task of mediumPriorityTasks"
+          cdkDrag
+          [cdkDragData]="task"
+        >
+          <span class="title" [style.color]="task.priority | priorityColor">
+            {{ task.title }}
+          </span>
+          <p>{{ task.status }}</p>
+          <div class="deadline">
+            <span *ngIf="task.deadline; else noDeadline">{{
+              task.deadline | date : "yyyy-MM-dd"
+            }}</span>
+            <ng-template #noDeadline>
+              <span class="no-deadline">No Time</span>
+            </ng-template>
+          </div>
+
+          <div class="task-actions">
+            <button class="btn btn-edit" (click)="editTask(task)">
+              <img src="edit-icon.png" alt="Edit" class="btn-icon" />
+            </button>
+            <button
+              class="btn btn-delete"
+              *ngIf="task.id !== undefined"
+              (click)="deleteTask(task.id)"
+            >
+              <img src="delete-icon.png" alt="Delete" class="btn-icon" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kolumn för High Priority -->
+      <div
+        class="task-column high"
+        cdkDropList
+        [cdkDropListData]="highPriorityTasks"
+        [cdkDropListConnectedTo]="['low', 'medium', 'completed']"
+        id="high"
+        (cdkDropListDropped)="onTaskDrop($event)"
+      >
+        <h3>High Priority</h3>
+        <div
+          class="task-card high"
+          *ngFor="let task of highPriorityTasks"
+          cdkDrag
+          [cdkDragData]="task"
+        >
+          <span class="title" [style.color]="task.priority | priorityColor">
+            {{ task.title }}
+          </span>
+          <p>{{ task.status }}</p>
+          <div class="deadline">
+            <span *ngIf="task.deadline; else noDeadline">{{
+              task.deadline | date : "yyyy-MM-dd"
+            }}</span>
+            <ng-template #noDeadline>
+              <span class="no-deadline">No Time</span>
+            </ng-template>
+          </div>
+
+          <div class="task-actions">
+            <button class="btn btn-edit" (click)="editTask(task)">
+              <img src="edit-icon.png" alt="Edit" class="btn-icon" />
+            </button>
+            <button
+              class="btn btn-delete"
+              *ngIf="task.id !== undefined"
+              (click)="deleteTask(task.id)"
+            >
+              <img src="delete-icon.png" alt="Delete" class="btn-icon" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kolumn för Completed -->
+      <div
+        class="task-column completed"
+        cdkDropList
+        [cdkDropListData]="completedTasks"
+        [cdkDropListConnectedTo]="['low', 'medium', 'high']"
+        id="completed"
+        (cdkDropListDropped)="onTaskDrop($event)"
+      >
+        <h3>Completed</h3>
+        <div
+          class="task-card completed"
+          *ngFor="let task of completedTasks"
+          cdkDrag
+          [cdkDragData]="task"
+        >
+          <span class="title" [style.color]="task.priority | priorityColor">
+            {{ task.title }}
+          </span>
+          <p>{{ task.status }}</p>
+          <div class="deadline">
+            <span *ngIf="task.deadline; else noDeadline">{{
+              task.deadline | date : "yyyy-MM-dd"
+            }}</span>
+            <ng-template #noDeadline>
+              <span class="no-deadline">No Time</span>
+            </ng-template>
+          </div>
+
+          <div class="task-actions">
+            <button class="btn btn-edit" (click)="editTask(task)">
+              <img src="edit-icon.png" alt="Edit" class="btn-icon" />
+            </button>
+            <button
+              class="btn btn-delete"
+              *ngIf="task.id !== undefined"
+              (click)="deleteTask(task.id)"
+            >
+              <img src="delete-icon.png" alt="Delete" class="btn-icon" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

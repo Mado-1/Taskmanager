@@ -1,0 +1,109 @@
+<!-- Komponent för att visa och redigera användare samt tillhörande projekt och tasks -->
+<div class="UserEdit">
+  <div *ngIf="user">
+    <div class="dialog-header">
+      <h2>Edit User: {{ user.name }}</h2>
+      <button class="close-btn" (click)="close()">&#10005;</button>
+    </div>
+
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="form-container">
+      <div class="form-group">
+        <label>Name:</label>
+        <input formControlName="name" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Role:</label>
+        <input formControlName="role" type="text" />
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-save">Save Changes</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Section för alla Projekts -->
+  <section class="dashboard-section" *ngIf="projects.length > 0">
+    <h3>All Projects</h3>
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      placeholder="Search project..."
+    />
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Project Name</th>
+          <th>Description</th>
+          <th>Type</th>
+          <th>Users</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let project of projects; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ project.name }}</td>
+          <td>{{ project.description }}</td>
+          <td>
+            <span *ngIf="project.userIds.length > 1; else own">Shared</span>
+            <ng-template #own>Own</ng-template>
+          </td>
+          <td>
+            <ng-container *ngFor="let id of project.userIds; let last = last">
+              {{ getUserName(id) }}<span *ngIf="!last">, </span>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <ng-template #noProjects>
+    <p>This user has no projects yet.</p>
+  </ng-template>
+
+  <section *ngIf="projects.length === 0">
+    <p>This user has no projects yet.</p>
+  </section>
+
+  <!-- Section för alla Uppgifter -->
+  <section class="dashboard-section" *ngIf="tasks.length > 0">
+    <h3>All Tasks</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Project Name</th>
+          <th>Priority</th>
+          <th>User</th>
+          <th>Status</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of tasks; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ task.title }}</td>
+          <td>{{ task.projectName }}</td>
+          <td [ngClass]="getPriorityClass(task.priority)">
+            {{ task.priority }}
+          </td>
+          <td>{{ getUserName(task.creatorId) }}</td>
+          <td>{{ task.status }}</td>
+          <td>
+            <ng-container
+              *ngIf="getProjectUserCount(task.projectId) > 1; else ownTask"
+              >Shared</ng-container
+            >
+            <ng-template #ownTask>Own</ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section *ngIf="tasks.length === 0">
+    <p>This user has no tasks yet.</p>
+  </section>
+</div>

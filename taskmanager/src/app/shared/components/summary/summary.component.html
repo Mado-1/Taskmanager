@@ -1,0 +1,27 @@
+<!-- Komponent för att visa sammanfattning av tasks och progress -->
+<section class="summary">
+  <div class="rows">
+    <span class="label">Total tasks:</span>
+    <span class="value">{{ total() }}</span>
+
+    <span class="label">Low:</span>
+    <span class="value">{{ low() }}</span>
+
+    <span class="label">Medium:</span>
+    <span class="value">{{ medium() }}</span>
+
+    <span class="label">High:</span>
+    <span class="value">{{ high() }}</span>
+
+    <div class="break"></div>
+
+    <span class="label">Completed:</span>
+    <span class="value">{{ completed() }}</span>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress" [style.width.%]="progress()"></div>
+  </div>
+
+  <div class="text">{{ progress() | number : "1.0-0" }}% - Progress</div>
+</section>

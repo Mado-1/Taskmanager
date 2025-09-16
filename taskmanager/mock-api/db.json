@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Mado",
+      "role": "it project ledare",
+      "avatar": ""
+    }
+  ],
+  "projects": [],
+  "tasks": []
+}

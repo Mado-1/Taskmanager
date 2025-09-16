@@ -1,0 +1,31 @@
+<!-- Sidomeny för navigering i applikationen -->
+<div class="sidebar" [class.open]="isOpen">
+  <button class="toggle-btn" (click)="toggleSidebar()">
+    <span *ngIf="isOpen">Meny</span>
+    <img *ngIf="isOpen" src="left.png" alt="Open Arrow" class="arrow-left" />
+    <img *ngIf="!isOpen" src="right.png" alt="Closed Arrow" class="arrow" />
+  </button>
+  <nav>
+    <a routerLink="/home">
+      <img src="home.png" alt="Home Icon" class="icon" />
+      <span *ngIf="isOpen">Home</span>
+    </a>
+    <a routerLink="/dashboard">
+      <img src="dashboard.png" alt="Dashboard Icon" class="icon" />
+      <span *ngIf="isOpen">Dashboard</span>
+    </a>
+    <a routerLink="/list">
+      <img src="list.png" alt="List Icon" class="icon" />
+      <span *ngIf="isOpen">List</span>
+    </a>
+    <hr class="sidebar-divider" />
+    <a routerLink="/download">
+      <img src="download.png" alt="Download Icon" class="icon" />
+      <span *ngIf="isOpen">Download</span>
+    </a>
+  </nav>
+  <div class="logo-container">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <span *ngIf="isOpen" class="logo-text">Taskmanger</span>
+  </div>
+</div>

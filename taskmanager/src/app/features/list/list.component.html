@@ -1,0 +1,236 @@
+<!-- Lista över användare, projekt och uppgifter -->
+
+<div class="list-wrapper">
+  <div class="user-select">
+    <label for="userDropdown">Select user:</label>
+    <ng-select
+      [items]="users$ | async"
+      bindLabel="name"
+      bindValue="id"
+      [multiple]="true"
+      [closeOnSelect]="false"
+      [hideSelected]="true"
+      placeholder="Choose user(s)"
+      [(ngModel)]="selectedUserModel"
+      [searchable]="true"
+      [clearable]="true"
+      [virtualScroll]="true"
+      id="userDropdown"
+    >
+      <ng-option [value]="null">All users</ng-option>
+    </ng-select>
+  </div>
+
+  <!-- Alla användare -->
+  <h3>All Users</h3>
+  <section class="data-table-section">
+    <table>
+      <thead>
+        <tr>
+          <th class="center-col">Nr</th>
+          <th class="action-col">Action</th>
+          <th>User Name</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users(); let i = index">
+          <td class="center-col">{{ i + 1 }}</td>
+          <td class="action-col">
+            <button
+              (click)="toggleUserData(user.id)"
+              class="action-btn"
+              [ngClass]="
+                selectedUserModel.includes(user.id) ? 'close-btn' : 'open-btn'
+              "
+            >
+              {{ selectedUserModel.includes(user.id) ? "Close" : "Open" }}
+            </button>
+          </td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.role }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Alla Projekter -->
+  <h3>All projects</h3>
+  <section class="data-table-section" *ngIf="selectedUserProjects().length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th class="center-col">Nr</th>
+          <th class="action-col">Action</th>
+          <th>Project name</th>
+          <th>Type</th>
+          <th>User name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container
+          *ngFor="let project of selectedUserProjects(); let i = index"
+        >
+          <tr>
+            <td class="center-col">{{ i + 1 }}</td>
+            <td class="action-col">
+              <button
+                class="action-btn"
+                [ngClass]="
+                  expandedProjectId === project.id ? 'close-btn' : 'open-btn'
+                "
+                (click)="toggleProjectDetails(project.id)"
+              >
+                {{ expandedProjectId === project.id ? "Close" : "Open" }}
+              </button>
+            </td>
+            <td>{{ project.name }}</td>
+            <td>
+              <span
+                *ngIf="project.userIds && project.userIds.length > 1; else own"
+                class="type-badge shared"
+                >Shared</span
+              >
+              <ng-template #own>
+                <span class="type-badge own">Own</span>
+              </ng-template>
+            </td>
+            <td>
+              <ng-container *ngFor="let id of project.userIds; let last = last">
+                {{ getUserName(id) }}<span *ngIf="!last">, </span>
+              </ng-container>
+            </td>
+          </tr>
+          <tr *ngIf="expandedProjectId === project.id">
+            <td colspan="5">
+              <div class="tasks-list">
+                <h4>Tasks for {{ project.name }}</h4>
+                <div class="project-summary">
+                  <span
+                    >{{
+                      getProjectSummary(project.id).active === 0
+                        ? "0"
+                        : getProjectSummary(project.id).active
+                    }}
+                    Active</span
+                  >
+                  |
+                  <span
+                    >{{
+                      getProjectSummary(project.id).completed === 0
+                        ? "0"
+                        : getProjectSummary(project.id).completed
+                    }}
+                    Completed</span
+                  >
+                  |
+                  <span
+                    >{{
+                      getProjectSummary(project.id).high === 0
+                        ? "0"
+                        : getProjectSummary(project.id).high
+                    }}
+                    High Priority</span
+                  >
+                  -
+                  <span
+                    >{{
+                      getProjectSummary(project.id).medium === 0
+                        ? "0"
+                        : getProjectSummary(project.id).medium
+                    }}
+                    Medium Priority</span
+                  >
+                 -
+                  <span
+                    >{{
+                      getProjectSummary(project.id).low === 0
+                        ? "0"
+                        : getProjectSummary(project.id).low
+                    }}
+                    Low Priority</span
+                  >
+                  |
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="center-col">Nr</th>
+                      <th>Title</th>
+                      <th>Priority</th>
+                      <th>Status</th>
+                      <th>Deadline</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngIf="getTasksForProject(project.id).length === 0">
+                      <td colspan="5" class="no-tasks-text">No tasks</td>
+                    </tr>
+                    <tr
+                      *ngFor="
+                        let task of getTasksForProject(project.id);
+                        let j = index
+                      "
+                    >
+                      <td class="center-col">{{ j + 1 }}</td>
+                      <td>{{ task.title }}</td>
+                      <td>
+                        <span class="drop-priority">{{ task.priority }}</span>
+                      </td>
+                      <td>
+                        <span class="drop-status"> {{ task.status }}</span>
+                      </td>
+                      <td>{{ task.deadline || "No deadline" }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </section>
+
+  <h3>All tasks</h3>
+  <!-- Alla Uppgifter -->
+  <section class="data-table-section" *ngIf="selectedUserTasks().length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th class="center-col">Nr</th>
+          <th>Title</th>
+          <th>Project name</th>
+          <th>Priority</th>
+          <th>Type</th>
+          <th>User name</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of selectedUserTasks(); let i = index">
+          <td class="center-col">{{ i + 1 }}</td>
+          <td>{{ task.title }}</td>
+          <td>{{ task.projectName }}</td>
+          <td>
+            <span [ngClass]="'priority ' + task.priority.toLowerCase()">
+              {{ task.priority }}
+            </span>
+          </td>
+          <td>
+            <span
+              *ngIf="getProjectType(task.projectId) === 'Shared'; else ownTask"
+              class="type-badge shared"
+              >Shared</span
+            >
+            <ng-template #ownTask>
+              <span class="type-badge own">Own</span>
+            </ng-template>
+          </td>
+          <td>{{ task.userName }}</td>
+          <td class="status-text">{{ task.status }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
